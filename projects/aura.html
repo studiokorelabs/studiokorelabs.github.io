@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AURA | Eco-Resort de Lujo en la Patagonia Argentina</title>
+    <meta name="description" content="Descubre AURA, un refugio exclusivo donde el lujo y la naturaleza convergen. Villas privadas, alta gastronomía y bienestar en el corazón de la Patagonia.">
+    <meta name="keywords" content="hotel de lujo, patagonia, resort ecologico, vacaciones premium, spa, villas privadas, argentina">
+    <meta name="author" content="Agencia de Desarrollo Digital">
+    
+    <!-- Open Graph SEO -->
+    <meta property="og:title" content="AURA | Refugio de Lujo en la Patagonia">
+    <meta property="og:description" content="Experimenta el silencio absoluto y el confort inigualable en nuestro eco-resort de diseño.">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1542314831-c6a4d14bfc0e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80">
+    <meta property="og:type" content="website">
+
+    <!-- Fonts: Inter (Body) & Playfair Display (Headings) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+
+    <style>
+        /* ==========================================================================
+           VARIABLES & RESET
+           ========================================================================== */
+        :root {
+            --color-bg: #F9F8F6;
+            --color-text: #2C2C2C;
+            --color-text-light: #666666;
+            --color-accent: #8B7355;
+            --color-accent-hover: #6e5b42;
+            --color-white: #FFFFFF;
+            
+            --font-primary: 'Inter', sans-serif;
+            --font-secondary: 'Playfair Display', serif;
+            
+            --spacing-xs: 0.5rem;
+            --spacing-sm: 1rem;
+            --spacing-md: 2.5rem;
+            --spacing-lg: 5rem;
+            --spacing-xl: 10rem;
+            
+            --transition-smooth: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            font-size: 16px;
+        }
+
+        body {
+            font-family: var(--font-primary);
+            background-color: var(--color-bg);
+            color: var(--color-text);
+            line-height: 1.6;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            object-fit: cover;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        /* ==========================================================================
+           TYPOGRAPHY
+           ========================================================================== */
+        h1, h2, h3, h4, .serif {
+            font-family: var(--font-secondary);
+            font-weight: 400;
+            line-height: 1.2;
+        }
+
+        .text-huge {
+            font-size: clamp(3rem, 8vw, 6rem);
+            color: var(--color-white);
+        }
+
+        h2 {
+            font-size: clamp(2rem, 5vw, 4rem);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        h3 {
+            font-size: clamp(1.5rem, 3vw, 2.5rem);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        p {
+            font-size: 1rem;
+            color: var(--color-text-light);
+            margin-bottom: var(--spacing-md);
+            max-width: 60ch;
+        }
+
+        /* ==========================================================================
+           COMPONENTS
+           ========================================================================== */
+        .btn {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            transition: var(--transition-smooth);
+            cursor: pointer;
+            border: 1px solid transparent;
+        }
+
+        .btn-solid {
+            background-color: var(--color-accent);
+            color: var(--color-white);
+        }
+
+        .btn-solid:hover {
+            background-color: var(--color-accent-hover);
+        }
+
+        .btn-outline {
+            border-color: var(--color-white);
+            color: var(--color-white);
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+        }
+
+        .btn-outline:hover {
+            background: var(--color-white);
+            color: var(--color-text);
+        }
+
+        .btn-dark-outline {
+            border-color: var(--color-text);
+            color: var(--color-text);
+        }
+
+        .btn-dark-outline:hover {
+            background: var(--color-text);
+            color: var(--color-white);
+        }
+
+        /* ==========================================================================
+           NAVIGATION
+           ========================================================================== */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 1.5rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            transition: var(--transition-smooth);
+        }
+
+        header.scrolled {
+            background-color: rgba(249, 248, 246, 0.95);
+            padding: 1rem 5%;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            backdrop-filter: blur(10px);
+        }
+
+        .logo {
+            font-family: var(--font-secondary);
+            font-size: 1.5rem;
+            letter-spacing: 0.2em;
+            color: var(--color-white);
+            transition: color 0.3s;
+        }
+
+        header.scrolled .logo, header.scrolled .nav-links a {
+            color: var(--color-text);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--color-white);
+            font-size: 0.875rem;
+            letter-spacing: 0.05em;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--color-accent);
+        }
+
+        .menu-toggle {
+            display: none;
+            color: var(--color-white);
+            font-size: 1.5rem;
+            cursor: pointer;
+            z-index: 1001;
+        }
+
+        header.scrolled .menu-toggle {
+            color: var(--color-text);
+        }
+
+        /* ==========================================================================
+           HERO SECTION
+           ========================================================================== */
+        .hero {
+            height: 100vh;
+            width: 100%;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 0 5%;
+        }
+
+        .hero-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://images.unsplash.com/photo-1542314831-c6a4d14bfc0e?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80') no-repeat center center/cover;
+            z-index: -2;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0.6) 100%);
+            z-index: -1;
+        }
+
+        .hero-content {
+            max-width: 800px;
+        }
+
+        .hero-subtitle {
+            color: var(--color-white);
+            font-size: 1rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+            display: block;
+            animation: fadeInDown 1s ease forwards;
+        }
+
+        .hero h1 {
+            margin-bottom: 2rem;
+            animation: fadeInUp 1.2s ease forwards;
+        }
+
+        .hero .btn-outline {
+            animation: fadeInUp 1.4s ease forwards;
+            opacity: 0;
+        }
+
+        /* ==========================================================================
+           PHILOSOPHY SECTION
+           ========================================================================== */
+        .philosophy {
+            padding: var(--spacing-xl) 5%;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .philosophy p.lead {
+            font-family: var(--font-secondary);
+            font-size: clamp(1.5rem, 3vw, 2.5rem);
+            color: var(--color-text);
+            line-height: 1.4;
+            max-width: 800px;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        /* ==========================================================================
+           VILLAS SECTION (Grid)
+           ========================================================================== */
+        .villas {
+            padding: 0 5% var(--spacing-xl);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: var(--spacing-lg);
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .villas-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .villa-card {
+            background: var(--color-white);
+            overflow: hidden;
+            transition: var(--transition-smooth);
+            cursor: pointer;
+        }
+
+        .villa-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.05);
+        }
+
+        .villa-img-wrap {
+            overflow: hidden;
+            height: 400px;
+            position: relative;
+        }
+
+        .villa-card img {
+            width: 100%;
+            height: 100%;
+            transition: transform 1s ease;
+        }
+
+        .villa-card:hover img {
+            transform: scale(1.05);
+        }
+
+        .villa-info {
+            padding: 2rem;
+        }
+
+        .villa-meta {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 1rem;
+            font-size: 0.875rem;
+            color: var(--color-accent);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .villa-info h3 {
+            margin-bottom: 1rem;
+        }
+
+        .villa-info p {
+            margin-bottom: 0;
+        }
+
+        /* ==========================================================================
+           EXPERIENCE SECTION (Split layout)
+           ========================================================================== */
+        .experience {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            background-color: var(--color-white);
+        }
+
+        .exp-image {
+            height: 100vh;
+            min-height: 600px;
+        }
+
+        .exp-image img {
+            width: 100%;
+            height: 100%;
+        }
+
+        .exp-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 10%;
+        }
+
+        .exp-content p {
+            margin-bottom: 2.5rem;
+        }
+
+        /* Reverse Layout */
+        .experience.reverse .exp-image {
+            order: 2;
+        }
+        .experience.reverse .exp-content {
+            order: 1;
+        }
+
+        /* ==========================================================================
+           FOOTER / CTA SECTION
+           ========================================================================== */
+        .final-cta {
+            padding: var(--spacing-xl) 5%;
+            text-align: center;
+            background-color: var(--color-accent);
+            color: var(--color-white);
+        }
+
+        .final-cta h2 {
+            color: var(--color-white);
+        }
+
+        .final-cta p {
+            color: rgba(255,255,255,0.8);
+            margin: 0 auto 2.5rem;
+        }
+
+        footer {
+            background-color: #1A1A1A;
+            color: var(--color-white);
+            padding: var(--spacing-lg) 5% 2rem;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 3rem;
+            margin-bottom: 4rem;
+        }
+
+        .footer-col h4 {
+            font-family: var(--font-primary);
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 1.5rem;
+            color: var(--color-accent);
+        }
+
+        .footer-col ul li {
+            margin-bottom: 0.75rem;
+        }
+
+        .footer-col ul li a {
+            color: #999;
+            transition: color 0.3s;
+        }
+
+        .footer-col ul li a:hover {
+            color: var(--color-white);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 2rem;
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.875rem;
+            color: #666;
+        }
+
+        /* ==========================================================================
+           ANIMATIONS & UTILITIES
+           ========================================================================== */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Reveal on Scroll Classes */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ==========================================================================
+           RESPONSIVE DESIGN (Mobile First Adjustments inside Max-Width)
+           ========================================================================== */
+        @media (max-width: 992px) {
+            .experience {
+                grid-template-columns: 1fr;
+            }
+            .exp-image {
+                height: 50vh;
+                min-height: 400px;
+            }
+            .experience.reverse .exp-image {
+                order: 1;
+            }
+            .experience.reverse .exp-content {
+                order: 2;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 100vw;
+                height: 100vh;
+                background-color: var(--color-bg);
+                flex-direction: column;
+                justify-content: center;
+                transition: right 0.4s ease;
+            }
+
+            .nav-links.active {
+                right: 0;
+            }
+
+            .nav-links a {
+                color: var(--color-text);
+                font-size: 1.5rem;
+                font-family: var(--font-secondary);
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+
+            .header-cta {
+                display: none;
+            }
+
+            /* Sticky Mobile CTA for Conversion */
+            .mobile-booking-bar {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                background-color: var(--color-accent);
+                padding: 1rem;
+                text-align: center;
+                z-index: 999;
+                display: block;
+            }
+            .mobile-booking-bar a {
+                color: var(--color-white);
+                font-weight: 500;
+                text-transform: uppercase;
+                letter-spacing: 0.1em;
+                font-size: 0.875rem;
+            }
+            
+            body {
+                padding-bottom: 60px; /* Space for sticky bar */
+            }
+        }
+
+        @media (min-width: 769px) {
+            .mobile-booking-bar {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAVEGACIÓN -->
+    <header id="header">
+        <a href="#" class="logo">AURA</a>
+        <div class="menu-toggle" id="mobile-menu">☰</div>
+        <nav class="nav-links" id="nav-links">
+            <a href="#villas">Villas</a>
+            <a href="#gastronomia">Gastronomía</a>
+            <a href="#spa">Bienestar</a>
+            <a href="#contacto">Contacto</a>
+            <a href="#reserva" class="btn btn-solid header-cta">Reservar</a>
+        </nav>
+    </header>
+
+    <main>
+        <!-- HERO SECTION -->
+        <section class="hero">
+            <div class="hero-bg"></div>
+            <div class="hero-overlay"></div>
+            <div class="hero-content">
+                <span class="hero-subtitle">Resort Ecológico & Spa</span>
+                <h1 class="text-huge">Descubre el Silencio</h1>
+                <a href="#villas" class="btn btn-outline">Explorar el Refugio</a>
+            </div>
+        </section>
+
+        <!-- FILOSOFÍA (Brand Identity) -->
+        <section class="philosophy">
+            <p class="lead reveal">"Diseñado para desaparecer en el paisaje. Un santuario donde la arquitectura brutalista y la naturaleza virgen de la Patagonia se fusionan para crear una experiencia de lujo crudo e inolvidable."</p>
+            <p class="reveal">En AURA redefinimos el lujo. No se trata de opulencia, sino de espacio, tiempo y una conexión inquebrantable con el entorno. Nuestros materiales provienen de la tierra, nuestra energía del viento, y nuestra tranquilidad de la lejanía absoluta.</p>
+        </section>
+
+        <!-- ALOJAMIENTO (Villas - E-commerce feel for rooms) -->
+        <section id="villas" class="villas">
+            <div class="section-header reveal">
+                <div>
+                    <h2>Santuarios Privados</h2>
+                    <p>Espacios diseñados para el aislamiento perfecto.</p>
+                </div>
+                <a href="#reserva" class="btn btn-dark-outline">Ver Disponibilidad</a>
+            </div>
+
+            <div class="villas-grid">
+                <!-- Villa 1 -->
+                <article class="villa-card reveal">
+                    <div class="villa-img-wrap">
+                        <img src="https://images.unsplash.com/photo-1510798831971-661eb04b3739?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Interior de Villa Bosque con ventanales grandes">
+                    </div>
+                    <div class="villa-info">
+                        <div class="villa-meta">
+                            <span>80 M²</span>
+                            <span>Vista al Bosque</span>
+                        </div>
+                        <h3>Villa Bosque</h3>
+                        <p>Inmersa en el bosque nativo de lengas. Cuenta con bañera de piedra volcánica, hogar a leña y terraza privada inmersiva.</p>
+                    </div>
+                </article>
+
+                <!-- Villa 2 -->
+                <article class="villa-card reveal" style="transition-delay: 0.1s;">
+                    <div class="villa-img-wrap">
+                        <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Interior de Villa Lago con vista al agua">
+                    </div>
+                    <div class="villa-info">
+                        <div class="villa-meta">
+                            <span>120 M²</span>
+                            <span>Vista al Lago</span>
+                        </div>
+                        <h3>Villa Lago</h3>
+                        <p>Diseño en voladizo sobre la orilla del lago. Incluye muelle privado, jacuzzi exterior climatizado y ventanales panorámicos de 180°.</p>
+                    </div>
+                </article>
+
+                <!-- Villa 3 -->
+                <article class="villa-card reveal" style="transition-delay: 0.2s;">
+                    <div class="villa-img-wrap">
+                        <img src="https://images.unsplash.com/photo-1590490360182-c33d57733427?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Interior de Villa Cumbre, suite premium">
+                    </div>
+                    <div class="villa-info">
+                        <div class="villa-meta">
+                            <span>200 M²</span>
+                            <span>Panorámica 360°</span>
+                        </div>
+                        <h3>La Cumbre Suite</h3>
+                        <p>Nuestra villa más exclusiva. Situada en el punto más alto del resort. Servicio de mayordomo 24/7, piscina infinita privada y cava de vinos.</p>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <!-- GASTRONOMÍA & BIENESTAR (Split Layout Experiences) -->
+        <section id="gastronomia" class="experience">
+            <div class="exp-image">
+                <img src="https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" alt="Plato de alta cocina con ingredientes locales" loading="lazy">
+            </div>
+            <div class="exp-content reveal">
+                <h2>Origen & Fuego</h2>
+                <p>Nuestra propuesta gastronómica rinde homenaje a los sabores ancestrales de la Patagonia. Cocinamos exclusivamente con fuegos de leña, ingredientes recolectados en nuestros huertos y pesca fresca de los lagos glaciares del sur.</p>
+                <a href="#" class="btn btn-dark-outline" style="align-self: flex-start;">Descubrir el Menú</a>
+            </div>
+        </section>
+
+        <section id="spa" class="experience reverse">
+            <div class="exp-image">
+                <img src="https://images.unsplash.com/photo-1540555700478-4be289fbecef?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" alt="Spa minimalista con iluminación tenue" loading="lazy">
+            </div>
+            <div class="exp-content reveal">
+                <h2>Santuario de Agua</h2>
+                <p>Un spa subterráneo tallado en la roca madre. Circuitos de hidroterapia con aguas termales naturales, terapias con arcillas locales y masajes holísticos diseñados para desconectar la mente y reparar el cuerpo tras las expediciones.</p>
+                <a href="#" class="btn btn-dark-outline" style="align-self: flex-start;">Ver Tratamientos</a>
+            </div>
+        </section>
+
+        <!-- FINAL CTA / CONVERSIÓN -->
+        <section id="reserva" class="final-cta">
+            <h2 class="reveal">Tu escape comienza aquí</h2>
+            <p class="reveal">Selecciona tus fechas y permítenos preparar una experiencia a medida.</p>
+            <a href="#" class="btn btn-solid reveal">Iniciar Reserva Seguro</a>
+        </section>
+    </main>
+
+    <!-- MOBILE STICKY CTA (Conversión para Móviles) -->
+    <div class="mobile-booking-bar">
+        <a href="#reserva">Reservar Ahora</a>
+    </div>
+
+    <!-- FOOTER -->
+    <footer id="contacto">
+        <div class="footer-grid">
+            <div class="footer-col">
+                <h4 class="logo" style="margin-bottom: 1rem; color: #fff;">AURA</h4>
+                <p style="color: #999; font-size: 0.875rem;">Km 42, Ruta Escénica<br>San Carlos de Bariloche<br>Patagonia, Argentina</p>
+            </div>
+            <div class="footer-col">
+                <h4>Experiencia</h4>
+                <ul>
+                    <li><a href="#villas">Nuestras Villas</a></li>
+                    <li><a href="#gastronomia">Restaurante Origen</a></li>
+                    <li><a href="#spa">Spa Subterráneo</a></li>
+                    <li><a href="#">Expediciones</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Legal & Info</h4>
+                <ul>
+                    <li><a href="#">Política de Privacidad</a></li>
+                    <li><a href="#">Términos de Reserva</a></li>
+                    <li><a href="#">Sostenibilidad</a></li>
+                    <li><a href="#">Prensa</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Contacto</h4>
+                <ul>
+                    <li><a href="mailto:reservations@auraresort.com">reservations@auraresort.com</a></li>
+                    <li><a href="tel:+5491112345678">+54 9 11 1234-5678</a></li>
+                    <li><a href="#">Instagram</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <span>&copy; 2026 AURA Eco-Resort. Todos los derechos reservados.</span>
+            <span>Diseñado por Agencia Digital PRO</span>
+        </div>
+    </footer>
+
+    <!-- INTERACTIVIDAD JS -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // 1. HEADER DINÁMICO (Cambia al hacer scroll)
+            const header = document.getElementById('header');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 50) {
+                    header.classList.add('scrolled');
+                } else {
+                    header.classList.remove('scrolled');
+                }
+            });
+
+            // 2. MENÚ MOBILE (Hamburguesa)
+            const mobileMenuBtn = document.getElementById('mobile-menu');
+            const navLinks = document.getElementById('nav-links');
+            
+            mobileMenuBtn.addEventListener('click', () => {
+                navLinks.classList.toggle('active');
+                if(navLinks.classList.contains('active')){
+                    mobileMenuBtn.innerHTML = '✕';
+                    header.classList.add('scrolled'); // Force background on open
+                } else {
+                    mobileMenuBtn.innerHTML = '☰';
+                    if (window.scrollY <= 50) header.classList.remove('scrolled');
+                }
+            });
+
+            // Cerrar menú al hacer click en un enlace (Mobile)
+            document.querySelectorAll('.nav-links a').forEach(link => {
+                link.addEventListener('click', () => {
+                    navLinks.classList.remove('active');
+                    mobileMenuBtn.innerHTML = '☰';
+                });
+            });
+
+            // 3. ANIMACIONES REVEAL ON SCROLL (Performance amigable)
+            const revealElements = document.querySelectorAll('.reveal');
+            
+            const revealCallback = (entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                        observer.unobserve(entry.target); // Animamos solo una vez para mejor UX
+                    }
+                });
+            };
+
+            const revealOptions = {
+                root: null,
+                rootMargin: '0px 0px -100px 0px',
+                threshold: 0.1
+            };
+
+            const revealObserver = new IntersectionObserver(revealCallback, revealOptions);
+            
+            revealElements.forEach(el => {
+                revealObserver.observe(el);
+            });
+        });
+    </script>
+</body>
+</html>

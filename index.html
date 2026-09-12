@@ -1,1329 +1,161 @@
-<!DOCTYPE html>
-<html lang="es">
+<!doctype html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Looma | Diseño y Desarrollo Web</title>
-  <link rel="icon" href="images/favicon.ico" type="image/png" />
-  
-  <!-- Tipografía Moderna 2026 -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Kore Labs builds high-performance websites, digital systems and conversion-focused experiences for ambitious companies.">
+  <meta name="theme-color" content="#090909">
+  <meta property="og:title" content="Kore Labs — Digital systems, engineered properly.">
+  <meta property="og:description" content="High-performance websites, digital experiences and technical infrastructure built around your business.">
+  <meta property="og:type" content="website">
+  <title>Kore Labs — Digital systems, engineered properly.</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  
-  <!-- Animaciones AOS -->
-  <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css" />
-
-  <style>
-    /* VARIABLES GLOBALES - TEMA OSCURO PREMIUM 2026 */
-    :root {
-      --bg-color: #050505;
-      --surface-color: #121212;
-      --surface-hover: #1e1e1e;
-      --border-color: #2a2a2a;
-      --text-main: #ffffff;
-      --text-muted: #a1a1aa;
-      --accent-color: #6366f1; /* Indigo moderno */
-      --accent-glow: rgba(99, 102, 241, 0.15);
-      --radius-sm: 12px;
-      --radius-md: 24px;
-      --radius-lg: 32px;
-      --font-main: 'Plus Jakarta Sans', sans-serif;
-      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    /* RESET BÁSICO */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
-
-    body {
-      background-color: var(--bg-color);
-      color: var(--text-main);
-      font-family: var(--font-main);
-      line-height: 1.6;
-      overflow-x: hidden;
-    }
-
-    a {
-      text-decoration: none;
-      color: inherit;
-    }
-
-    ul {
-      list-style: none;
-    }
-
-    img, video {
-      max-width: 100%;
-      height: auto;
-      display: block;
-      /* Estilo por si no carga la imagen */
-      background-color: var(--surface-hover);
-      color: var(--text-muted);
-      font-size: 0.8rem;
-    }
-
-    /* FONDOS CON GLOW */
-    .glow-bg {
-      position: absolute;
-      top: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 100%;
-      max-width: 1000px;
-      height: 600px;
-      background: radial-gradient(circle, var(--accent-glow) 0%, rgba(5,5,5,0) 70%);
-      z-index: -1;
-      pointer-events: none;
-    }
-
-    /* HEADER & NAVEGACIÓN (GLASSMORPHISM) */
-    .header {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1rem 5%;
-      background: rgba(5, 5, 5, 0.7);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border-color);
-      z-index: 1000;
-      transition: var(--transition);
-    }
-
-    .logo img {
-      height: 40px;
-      filter: invert(1); /* Asumiendo que el logo original es negro, lo invertimos a blanco */
-    }
-    .logo {
-      font-size: 1.5rem;
-      font-weight: 800;
-      letter-spacing: -1px;
-    }
-
-    .menu-toggle {
-      display: none;
-      font-size: 1.8rem;
-      cursor: pointer;
-    }
-
-    #nav ul {
-      display: flex;
-      gap: 2.5rem;
-      align-items: center;
-    }
-
-    #nav ul li a {
-      font-weight: 500;
-      font-size: 0.95rem;
-      color: var(--text-muted);
-      transition: var(--transition);
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      cursor: pointer;
-    }
-
-    #nav ul li a:hover {
-      color: var(--text-main);
-    }
-
-    /* Dropdown moderno */
-    .dropdown {
-      position: relative;
-    }
-    
-    .dropdown img {
-      width: 12px;
-      transition: var(--transition);
-    }
-
-    .dropdown:hover img {
-      transform: rotate(180deg);
-    }
-
-    .submenu {
-      position: absolute;
-      top: 150%;
-      left: 50%;
-      transform: translateX(-50%) translateY(10px);
-      background: var(--surface-color);
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-sm);
-      padding: 0.5rem;
-      min-width: 200px;
-      opacity: 0;
-      visibility: hidden;
-      transition: var(--transition);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-      flex-direction: column;
-      gap: 0 !important;
-    }
-
-    .dropdown:hover .submenu {
-      opacity: 1;
-      visibility: visible;
-      transform: translateX(-50%) translateY(0);
-    }
-
-    .submenu li {
-      width: 100%;
-    
-    }
-
-    .submenu li a {
-      width: 100%;
-      padding: 0.8rem 1rem;
-      border-radius: 8px;
-      display: block !important;
-      text-align: center;
-      color: var(--text-muted) !important;
-    }
-
-    .submenu li a:hover {
-      background: var(--surface-hover);
-      color: var(--text-main) !important;
-    }
-
-    /* BOTONES GLOBALES */
-    .btn {
-      background: var(--text-main);
-      color: var(--bg-color);
-      padding: 0.8rem 1.8rem;
-      border-radius: 50px;
-      font-weight: 600;
-      font-size: 0.9rem;
-      transition: var(--transition);
-    }
-
-    .btn:hover {
-      background: var(--accent-color);
-      color: var(--text-main);
-      box-shadow: 0 0 20px var(--accent-glow);
-    }
-
-    .btn-outline {
-      background: transparent;
-      border: 1px solid var(--border-color);
-      color: var(--text-main);
-      padding: 0.8rem 1.8rem;
-      border-radius: 50px;
-      font-weight: 500;
-      transition: var(--transition);
-    }
-
-    .btn-outline:hover {
-      border-color: var(--text-main);
-    }
-
-    /* SECCIONES COMUNES */
-    section {
-      padding: 8rem 5%;
-      position: relative;
-    }
-    
-    .section-title {
-      font-size: clamp(2rem, 4vw, 3rem);
-      font-weight: 700;
-      letter-spacing: -1px;
-      margin-bottom: 3rem;
-      text-align: center;
-    }
-
-    .section-subtitle {
-      text-align: center;
-      color: var(--text-muted);
-      margin-top: -2rem;
-      margin-bottom: 4rem;
-      font-size: 1.1rem;
-    }
-
-    /* HERO SECTION */
-    .hero {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      padding-top: 120px; /* offset header */
-    }
-
-    .hero h1 {
-      font-size: clamp(3rem, 8vw, 5.5rem);
-      font-weight: 800;
-      line-height: 1.1;
-      letter-spacing: -2px;
-      max-width: 900px;
-      margin-bottom: 2rem;
-      background: linear-gradient(to right, #fff, #a1a1aa);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .hero .more-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 1rem;
-      font-weight: 500;
-      color: var(--text-main);
-      padding-bottom: 5px;
-      border-bottom: 2px solid var(--accent-color);
-      transition: var(--transition);
-    }
-    
-    .hero .more-btn:hover {
-      gap: 15px;
-      color: var(--accent-color);
-    }
-
-    /* PROYECTOS (PORTFOLIO GRID) */
-    .projects {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(600px, 1fr));
-      gap: 2rem;
-      margin-top: 3rem;
-    }
-
-    .project {
-      position: relative;
-      border-radius: var(--radius-md);
-      overflow: hidden;
-      aspect-ratio: 4/3;
-      background: var(--surface-color);
-      border: 1px solid var(--border-color);
-      transition: var(--transition);
-    }
-
-    .project a {
-      display: block;
-      width: 100%;
-      height: 100%;
-    }
-
-    .project img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-      filter: grayscale(0.8) brightness(0.7);
-    }
-
-    .project:hover img {
-      transform: scale(1.05);
-      filter: grayscale(0) brightness(1);
-    }
-
-    .project-info {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      padding: 2rem;
-      background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
-      transform: translateY(20px);
-      opacity: 0;
-      transition: var(--transition);
-    }
-
-    .project:hover .project-info {
-      transform: translateY(0);
-      opacity: 1;
-    }
-
-    .project-info h3 {
-      font-size: 1.5rem;
-      font-weight: 700;
-      margin-bottom: 0.2rem;
-    }
-
-    .project-info p {
-      color: var(--text-muted);
-      font-size: 0.9rem;
-    }
-
-    /* VIDEO SECTION */
-    .video-section {
-      padding: 4rem 5%;
-    }
-
-    .video-wrapper {
-      position: relative;
-      border-radius: var(--radius-lg);
-      overflow: hidden;
-      border: 1px solid var(--border-color);
-      aspect-ratio: 16/9;
-      background: var(--surface-color);
-    }
-
-    .video-wrapper video {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    /* SERVICIOS (BENTO BOX GRID) */
-    .services {
-      background-color: var(--bg-color);
-    }
-
-    .service-list {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 2rem;
-    }
-
-    .service {
-      background: var(--surface-color);
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-md);
-      padding: 3rem 2rem;
-      transition: var(--transition);
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-    }
-
-    .service:hover {
-      background: var(--surface-hover);
-      border-color: var(--accent-color);
-      transform: translateY(-5px);
-    }
-
-    .service img {
-      height: 300px;
-      border-radius: var(--radius-sm);
-      margin-bottom: 2rem;
-      object-fit: cover;
-    }
-
-    .service h3 {
-      font-size: 1.5rem;
-      margin-bottom: 1rem;
-      font-weight: 600;
-    }
-
-    .service p {
-      color: var(--text-muted);
-      margin-bottom: 2rem;
-      flex-grow: 1;
-    }
-
-    .service a {
-      align-self: flex-start;
-      font-weight: 600;
-      color: var(--accent-color);
-      font-size: 0.9rem;
-      letter-spacing: 1px;
-    }
-
-    .other {
-      background: linear-gradient(135deg, var(--surface-color), var(--accent-glow));
-      border: 1px solid var(--accent-color);
-      border-radius: var(--radius-md);
-      padding: 3rem 2rem;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      margin-top: 2rem;
-    }
-
-    .other p {
-      font-size: 1.5rem;
-      font-weight: 600;
-      margin-bottom: 1rem;
-    }
-
-    .other a {
-      font-weight: 600;
-      text-decoration: underline;
-      text-underline-offset: 4px;
-    }
-
-    /* PLANES Y PRECIOS */
-    .pricing-list {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 2rem;
-    }
-
-    .plan {
-      background: var(--surface-color);
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-md);
-      padding: 3rem 2rem;
-      display: flex;
-      flex-direction: column;
-      position: relative;
-      transition: var(--transition);
-    }
-
-    .plan:nth-child(2) {
-      border-color: var(--accent-color);
-      box-shadow: 0 0 30px rgba(99, 102, 241, 0.1);
-    }
-
-    .plan:hover {
-      transform: translateY(-10px);
-    }
-
-    .plan .type {
-      display: inline-block;
-      padding: 0.3rem 1rem;
-      background: var(--surface-hover);
-      border: 1px solid var(--border-color);
-      border-radius: 50px;
-      font-size: 0.8rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-bottom: 1.5rem;
-      align-self: flex-start;
-    }
-
-    .plan:nth-child(2) .type {
-      background: var(--accent-color);
-      color: white;
-      border-color: var(--accent-color);
-    }
-
-    .plan h3 {
-      font-size: 1.5rem;
-      margin-bottom: 0.5rem;
-    }
-
-    .plan .price {
-      font-size: 2.5rem;
-      font-weight: 800;
-      margin-bottom: 2rem;
-      letter-spacing: -1px;
-    }
-
-    .plan p {
-      color: var(--text-muted);
-      margin-bottom: 2rem;
-      flex-grow: 1;
-      font-size: 0.95rem;
-    }
-
-    .plan a {
-      text-align: center;
-      display: block;
-      width: 100%;
-      padding: 1rem;
-      border-radius: var(--radius-sm);
-      background: var(--surface-hover);
-      color: var(--text-main);
-      font-weight: 600;
-      border: 1px solid var(--border-color);
-      transition: var(--transition);
-    }
-
-    .plan:nth-child(2) a {
-      background: var(--text-main);
-      color: var(--bg-color);
-    }
-
-    .plan a:hover {
-      background: var(--accent-color);
-      color: white;
-      border-color: var(--accent-color);
-    }
-
-    /* CONTACTO */
-    .contact {
-      background: var(--surface-color);
-      border-top: 1px solid var(--border-color);
-      border-bottom: 1px solid var(--border-color);
-    }
-
-    .contact-form {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 4rem;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-
-    .contact-l h2 {
-      font-size: clamp(2rem, 3vw, 2.5rem);
-      font-weight: 700;
-      margin-bottom: 2rem;
-      line-height: 1.2;
-    }
-
-    .social {
-      margin-bottom: 3rem;
-    }
-    
-    .social h3, .redes h3 {
-      font-size: 1rem;
-      color: var(--text-muted);
-      margin-bottom: 1.5rem;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-
-    .social a {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      padding: 1rem;
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-sm);
-      margin-bottom: 1rem;
-      transition: var(--transition);
-      background: var(--bg-color);
-    }
-
-    .social a:hover {
-      border-color: var(--accent-color);
-      transform: translateX(10px);
-    }
-
-    .social img, .redes-cont img {
-      width: 24px;
-      height: 24px;
-      filter: invert(1);
-    }
-
-    .redes-cont {
-      display: flex;
-      gap: 1rem;
-    }
-
-    .redes-cont a {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 50px;
-      height: 50px;
-      border: 1px solid var(--border-color);
-      border-radius: 50%;
-      transition: var(--transition);
-      background: var(--bg-color);
-    }
-
-    .redes-cont a:hover {
-      border-color: var(--accent-color);
-      background: var(--accent-color);
-    }
-
-    form {
-      background: var(--bg-color);
-      padding: 3rem;
-      border-radius: var(--radius-md);
-      border: 1px solid var(--border-color);
-    }
-
-    form p {
-      font-size: 1.2rem;
-      font-weight: 600;
-      margin-bottom: 2rem;
-    }
-
-    form input, form textarea {
-      width: 100%;
-      background: var(--surface-color);
-      border: 1px solid var(--border-color);
-      color: var(--text-main);
-      padding: 1rem 1.5rem;
-      border-radius: var(--radius-sm);
-      margin-bottom: 1.5rem;
-      font-family: inherit;
-      font-size: 1rem;
-      transition: var(--transition);
-    }
-
-    form input:focus, form textarea:focus {
-      outline: none;
-      border-color: var(--accent-color);
-      box-shadow: 0 0 0 2px var(--accent-glow);
-    }
-
-    form button {
-      width: 100%;
-      background: var(--text-main);
-      color: var(--bg-color);
-      padding: 1.2rem;
-      border: none;
-      border-radius: var(--radius-sm);
-      font-weight: 700;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: var(--transition);
-    }
-
-    form button:hover {
-      background: var(--accent-color);
-      color: white;
-    }
-
-    #status, #subscribeStatus {
-      margin-top: 1rem;
-      font-size: 0.9rem;
-      font-weight: 500;
-      text-align: center;
-    }
-
-    /* FAQ SECTION */
-    .faq-container {
-      max-width: 800px;
-      margin: 0 auto;
-    }
-
-    .faq-item {
-      border-bottom: 1px solid var(--border-color);
-    }
-
-    .faq-question {
-      width: 100%;
-      text-align: left;
-      background: transparent;
-      border: none;
-      color: var(--text-main);
-      padding: 1.5rem 0;
-      font-size: 1.1rem;
-      font-weight: 600;
-      font-family: inherit;
-      cursor: pointer;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .faq-question::after {
-      content: '+';
-      font-size: 1.5rem;
-      color: var(--accent-color);
-      transition: transform 0.3s ease;
-    }
-
-    .faq-item.active .faq-question::after {
-      transform: rotate(45deg);
-    }
-
-    .faq-answer {
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.4s ease;
-    }
-
-    .faq-answer p {
-      padding-bottom: 1.5rem;
-      color: var(--text-muted);
-    }
-
-    /* FOOTER */
-    .footer {
-      background: var(--bg-color);
-      padding: 5rem 5% 2rem;
-      border-top: 1px solid var(--border-color);
-    }
-
-    .footer-top {
-      display: flex;
-      flex-direction: column;
-      gap: 4rem;
-      margin-bottom: 4rem;
-    }
-
-    .footer-text h2 {
-      font-size: clamp(1.5rem, 3vw, 2.5rem);
-      max-width: 500px;
-      margin-bottom: 1rem;
-    }
-
-    .footer-text p {
-      color: var(--text-muted);
-    }
-
-    .footer-columns {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 3rem;
-    }
-
-    .footer-col h3 {
-      font-size: 1rem;
-      font-weight: 600;
-      margin-bottom: 1.5rem;
-      color: var(--text-main);
-    }
-
-    .footer-col ul li {
-      margin-bottom: 0.8rem;
-    }
-
-    .footer-col ul li a {
-      color: var(--text-muted);
-      font-size: 0.95rem;
-      transition: var(--transition);
-    }
-
-    .footer-col ul li a:hover {
-      color: var(--accent-color);
-    }
-
-    #subscribeForm input {
-      padding: 0.8rem;
-      margin-bottom: 0.5rem;
-    }
-
-    #subscribeForm button {
-      padding: 0.8rem;
-    }
-
-    .footer-bottom {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 2rem;
-      padding-top: 2rem;
-      border-top: 1px solid var(--border-color);
-    }
-
-    .footer-logos {
-      display: flex;
-      gap: 2rem;
-      flex-wrap: wrap;
-      justify-content: center;
-      opacity: 0.5;
-      filter: grayscale(1) invert(1);
-    }
-    
-    .footer-logos img {
-      height: 30px;
-    }
-
-    .rights {
-      color: var(--text-muted);
-      font-size: 0.9rem;
-    }
-
-    /* RESPONSIVE DESIGN */
-    @media (max-width: 992px) {
-      .contact-form {
-        grid-template-columns: 1fr;
-      }
-
-      .footer-columns {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    @media (max-width: 768px) {
-      .menu-toggle {
-        display: block;
-      }
-
-       .dropdown:hover .submenu {
-      opacity: 1;
-      visibility: visible;
-      transform: translateX(0) translateY(0);
-    }
-      
-      #nav {
-        position: absolute;
-        top: 100%;
-        left: 0;
-        width: 100%;
-        background: var(--surface-color);
-        border-bottom: 1px solid var(--border-color);
-        padding: 2rem;
-        clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
-        transition: clip-path 0.4s ease-in-out;
-      }
-
-      #nav.active {
-        clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
-      }
-
-      #nav ul {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-      
-      .submenu {
-        position: static;
-        opacity: 1;
-        visibility: visible;
-        transform: none;
-        box-shadow: none;
-        border: none;
-        padding-left: 1rem;
-        margin-top: 1rem;
-        display: none;
-      }
-
-      .dropdown:hover .submenu {
-        display: flex;
-      }
-      
-      .btn {
-        display: none;
-      }
-
-      .btn-outline {
-        display: inline-block;
-      }
-
-      .projects {
-        grid-template-columns: 1fr;
-      }
-    }
-  </style>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  
-  <div class="glow-bg"></div>
+  <div class="noise"></div>
+  <div class="cursor-glow" id="cursorGlow"></div>
 
-  <!-- HEADER -->
-  <header class="header">
-    <div class="logo">
-      <!-- Si la imagen falla, mostramos texto, por eso mantengo el alt o texto -->
-      <a href="#">
-        Looma
-      </a>
-    </div>
+  <header class="site-header">
+    <a class="logo" href="#" aria-label="Kore Labs home">
+      <span class="logo-mark"><img src="images/logo.png" alt="Kore Labs logo" style="width: 20px; height: auto;"></span>
+      <span>KORE <b>LABS</b></span>
+    </a>
 
-    <!-- Botón hamburguesa -->
-    <div class="menu-toggle" id="menu-toggle">☰</div>
-
-    <nav id="nav">
-      <ul>
-        <li class="dropdown">
-          <a>
-            <span>SERVICIOS</span>
-            <img src="images/Arrow.png" alt="▼" onerror="this.style.display='none'"/>
-          </a>
-          <ul class="submenu">
-            <li><a href="#servicios">Diseño Web</a></li>
-            <li><a href="#servicios">Mantenimiento</a></li>
-            <li><a href="#servicios">Redes Sociales</a></li>
-          </ul>
-        </li>
-        <li class="dropdown">
-          <a>
-            <span>PLANES</span>
-            <img src="images/Arrow.png" alt="▼" onerror="this.style.display='none'"/>
-          </a>
-          <ul class="submenu">
-            <li><a href="#planes">Plan Básico</a></li>
-            <li><a href="#planes">Plan Estándar</a></li>
-            <li><a href="#planes">Plan Premium</a></li>
-          </ul>
-        </li>
-      </ul>
+    <nav class="desktop-nav" aria-label="Primary navigation">
+      <a href="#work">Work</a>
+      <a href="#capabilities">Capabilities</a>
+      <a href="#process">Process</a>
+      <a href="#contact">Contact</a>
     </nav>
 
-    <a href="#comenzar" class="btn">EMPEZAR PROYECTO</a>
+    <a class="header-cta" href="#contact">Start a project <span>↗</span></a>
+    <button class="menu-btn" id="menuBtn" aria-label="Open menu"><span></span><span></span></button>
   </header>
 
-  <!-- HERO SECTION -->
-  <section class="hero">
-    <h1 data-aos="fade-up">Creamos la página web de tus sueños</h1>
-    <a data-aos="fade-up" data-aos-delay="100" href="#proyectos" class="more-btn">EXPLORAR TRABAJOS <span style="font-size: 1.2rem;">↓</span></a>
-  </section>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#work">Work</a>
+    <a href="#capabilities">Capabilities</a>
+    <a href="#process">Process</a>
+    <a href="#contact">Contact</a>
+  </div>
 
-  <!-- INTRO / PROYECTOS -->
-  <section id="proyectos" class="intro">
-    <h2 class="section-title" data-aos="fade-up">Desarrollo web personalizado</h2>
-    <p class="section-subtitle" data-aos="fade-up" data-aos-delay="100">Estos son algunos ejemplos de la calidad de nuestro servicio.</p>
-    
-    <div class="projects">
-      <!-- Proyecto 1 -->
-      <div data-aos="fade-up" class="project">
-        <a href="proyecto1.html">
-          <img src="proyecto1/1.png" alt="" onerror="this.src='https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&q=80&w=800'"/>
-          <div class="project-info">
-            <h3>GARCIA BIKE</h3>
-            <p>Tienda e-commerce de bicicletas y accesorios</p>
+  <main>
+    <section class="hero">
+      <div class="eyebrow"><span class="live-dot"></span> INDEPENDENT DIGITAL STUDIO · GLOBAL</div>
+      <h1>Digital systems.<br><em>Engineered properly.</em></h1>
+      <p class="hero-copy">Kore Labs designs and builds high-performance websites and digital experiences for companies that want to look exceptional <strong>and</strong> perform like it.</p>
+      <div class="hero-actions">
+        <a class="button button-primary" href="#work">Explore our work <span>↗</span></a>
+        <a class="text-link" href="#contact">Tell us what you're building <span>→</span></a>
+      </div>
+
+      <div class="hero-grid">
+        <div class="hero-panel panel-main">
+          <div class="panel-top"><span>CORE / 01</span><span>LIVE SYSTEM</span></div>
+          <div class="system-visual">
+            <div class="system-ring ring-1"></div>
+            <div class="system-ring ring-2"></div>
+            <div class="system-core">K</div>
+            <div class="system-label label-a">DESIGN</div>
+            <div class="system-label label-b">CODE</div>
+            <div class="system-label label-c">GROWTH</div>
           </div>
-        </a>
-      </div>
-      <!-- Proyecto 2 -->
-      <div data-aos="fade-up" data-aos-delay="100" class="project">
-        <a href="proyecto2.html">
-          <img src="proyecto2/1.png" alt="" onerror="this.src='https://images.unsplash.com/photo-1558769132-cb1aea458c5e?auto=format&fit=crop&q=80&w=800'"/>
-          <div class="project-info">
-            <h3>Maproart Holistika</h3>
-            <p>Centro de BienEstar físico, mental y espiritual</p>
-          </div>
-        </a>
-      </div>
-      <!-- Proyecto 3 -->
-      <div data-aos="fade-up" data-aos-delay="200" class="project">
-        <a href="proyecto3.html">
-          <img src="proyecto3/1.png" alt="[Image of Porfolio Web]" onerror="this.src='https://images.unsplash.com/photo-1507238692062-810ceecf792c?auto=format&fit=crop&q=80&w=800'"/>
-          <div class="project-info">
-            <h3>Servinou Geslau</h3>
-            <p>Asesoría de confianza para empresas, pymes y autónomos.</p>
-          </div>
-        </a>
-      </div>
-      <!-- Proyecto 4 -->
-      <div data-aos="fade-up" data-aos-delay="300" class="project">
-        <a href="proyecto4.html">
-          <img src="proyecto4/1.png" alt="" onerror="this.src='https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&q=80&w=800'"/>
-          <div class="project-info">
-            <h3>Accesorios G&F</h3>
-            <p>Tienda e-commerce de accesorios electrónicos</p>
-          </div>
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <!-- VIDEO SECTION
-  <section class="video-section">
-    <div class="video-wrapper" data-aos="zoom-in">
-      <video src="muestra.mp4" autoplay loop muted playsinline controls poster="https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80&w=1200"></video>
-    </div>
-  </section>-->
-
-  <!-- SERVICIOS -->
-  <section id="servicios" class="services">
-    <h2 class="section-title" data-aos="fade-up">Nuestros Servicios</h2>
-    <p class="section-subtitle" data-aos="fade-up" data-aos-delay="100">Soluciones integrales para escalar tu negocio digital.</p>
-    
-    <div class="service-list">
-      
-      <div data-aos="fade-up" class="service">
-        <img src="images/diseñoweb.jpg" alt="Diseño Web" onerror="this.style.display='none'"/>
-        <h3>Diseño Web</h3>
-        <p>Interfaces modernas, rápidas y adaptables a cualquier dispositivo. Páginas pensadas para convertir visitas en clientes y destacar la identidad de tu marca.</p>
-        <a href="pagweb.html">SOLICITAR COTIZACIÓN →</a>
-      </div>
-      
-      <div data-aos="fade-up" data-aos-delay="100" class="service">
-        <img src="images/mantenimiento.jpg" alt="Mantenimiento" onerror="this.style.display='none'"/>
-        <h3>Mantenimiento Web</h3>
-        <p>Mantén tu sitio seguro, actualizado y funcionando al 100%. Nos encargamos de copias de seguridad, optimización de velocidad y resolución de errores.</p>
-        <a href="mantenimiento.html">VER DETALLES →</a>
-      </div>
-
-      <div data-aos="fade-up" data-aos-delay="200" class="service">
-        <img src="images/redes.jpg" alt="Redes Sociales" onerror="this.style.display='none'"/>
-        <h3>Gestión de Redes</h3>
-        <p>Creamos contenido de alto impacto y estrategias de crecimiento para atraer a tu público objetivo en Instagram, LinkedIn, TikTok y más.</p>
-        <a href="redes.html">IMPULSAR REDES →</a>
-      </div>
-
-    </div>
-
-    <!-- Banner Adicional -->
-    <div data-aos="fade-up" class="other">
-      <p>¿Tienes requerimientos específicos para tu startup o empresa?</p>
-      <a href="https://wa.me/5492645643805" target="_blank">AGENDA UNA LLAMADA VÍA WHATSAPP</a>
-    </div>
-  </section>
-
-  <!-- PLANES Y PRECIOS -->
-  <section id="planes" class="pricing">
-    <h2 class="section-title" data-aos="fade-up">Planes Transparentes</h2>
-    <p class="section-subtitle" data-aos="fade-up" data-aos-delay="100">Invierte en la presencia digital de tu negocio.</p>
-    
-    <div class="pricing-list">
-      
-      <div data-aos="fade-up" class="plan">
-        <span class="type">Plan Básico</span>
-        <h3>Página Web</h3>
-        <p class="price">ARS$69.990</p>
-        <p>
-          • Creación de páginas web modernas y funcionales (PC, tablet, celular).<br><br>
-          • Diseño visual atractivo y personalizado.<br><br>
-          • Integración de formularios de contacto y enlaces a redes.<br><br>
-          • Optimización SEO básica.
-        </p>
-        <a href="https://wa.me/5492645643805?text=Hola,%20quiero%20consultar%20sobre%20el%20plan%20básico%20de%20Looma." target="_blank">ELEGIR PLAN</a>
-      </div>
-      
-      <div data-aos="fade-up" data-aos-delay="100" class="plan">
-        <span class="type">Más Popular</span>
-        <h3>Mantenimiento Web</h3>
-        <p class="price">ARS$29.990 <span style="font-size: 1rem; color: var(--text-muted); font-weight: 500;">/ Mes</span></p>
-        <p>
-          • Actualización constante de contenidos (textos/imágenes).<br><br>
-          • Optimización continua de velocidad y rendimiento.<br><br>
-          • Monitoreo de seguridad y copias de respaldo.<br><br>
-          • Soporte técnico prioritario por WhatsApp.
-        </p>
-        <a href="https://wa.me/5492645643805?text=Hola,%20quiero%20consultar%20sobre%20el%20plan%20estándar%20de%20Looma." target="_blank">SUSCRIBIRSE</a>
-      </div>
-      
-      <div data-aos="fade-up" data-aos-delay="200" class="plan">
-        <span class="type">Premium</span>
-        <h3>Web + Redes</h3>
-        <p class="price">ARS$59.990 <span style="font-size: 1rem; color: var(--text-muted); font-weight: 500;">/ Mes</span></p>
-        <p>
-          • Todo lo incluido en Desarrollo Web y Mantenimiento.<br><br>
-          • Gestión mensual de Redes Sociales.<br><br>
-          • Generación de contenido visual y copywriting.<br><br>
-          • Estrategias de interacción para crecer tu comunidad.
-        </p>
-        <a href="https://wa.me/5492645643805?text=Hola,%20quiero%20consultar%20sobre%20el%20plan%20premium%20de%20Looma." target="_blank">ELEGIR PREMIUM</a>
-      </div>
-
-    </div>
-     <div id="comenzar"></div>
-  </section>
-
-  <!-- CONTACTO -->
-  <section id="contacto" class="contact">
-    <div class="contact-form">
-      <div class="contact-l" data-aos="fade-right">
-        <h2>Hagamos realidad tu próximo gran proyecto.</h2>
-        
-        <div class="social">
-          <h3>Vías directas</h3>
-          <a href="https://wa.me/5492645643805" target="_blank">
-            <!-- Icono SVG en vez de imagen para asegurar carga en diseño minimalista -->
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
-            <span>WhatsApp (+54 264 564 3805)</span>
-          </a>
-          <a href="mailto:francogrosso36@gmail.com">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-            <span>francogrosso36@gmail.com</span>
-          </a>
+          <div class="panel-bottom"><span>DESIGN → DEVELOPMENT → PERFORMANCE</span><span>01—03</span></div>
         </div>
-
-        <div class="redes">
-          <h3>Síguenos</h3>
-          <div class="redes-cont">
-            <a target="_blank" href="https://www.instagram.com/loomawebs/">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
-            </a>
-            <a target="_blank" href="https://www.facebook.com/loomawebs">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
-            </a>
-            <a target="_blank" href="https://x.com/looma_webs">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4l11.73 16h5.27L9.27 4H4zm11.73 16L4 4"></path></svg>
-            </a>
-          </div>
+        <div class="hero-side">
+          <div class="metric-card"><small>BUILD PHILOSOPHY</small><strong>NO<br>UNNECESSARY<br>LAYERS.</strong></div>
+          <div class="metric-card"><small>STACK</small><strong>Next.js<br>React<br>TypeScript</strong></div>
         </div>
       </div>
+    </section>
 
-      <form id="contactForm" data-aos="fade-right">
-        <p>Inicia una conversación</p>
-        <input type="text" name="name" placeholder="Tu Nombre Completo" required />
-        <input type="email" name="email" placeholder="Correo Electrónico" required />
-        <textarea name="message" rows="6" placeholder="Cuéntanos sobre tu proyecto o duda..." required></textarea>
-        <button type="submit">ENVIAR MENSAJE</button>
-        <p id="status"></p>
-      </form>
-    </div>
-  </section>
+    <section class="statement">
+      <div class="section-label">01 / APPROACH</div>
+      <div>
+        <p class="statement-big">We don't build websites to fill a screen. <span>We build digital products with a reason to exist.</span></p>
+        <p class="statement-small">Strategy, interface, engineering and technical SEO work as one system — so the final product is not only beautiful, but useful, fast and ready to grow.</p>
+      </div>
+    </section>
 
-  <!-- FAQ SECTION -->
-  <section class="faq">
-    <h2 class="section-title" data-aos="fade-up">Preguntas Frecuentes</h2>
-    <div class="faq-container" data-aos="fade-up" data-aos-delay="100">
-      
-      <div class="faq-item">
-        <button class="faq-question">¿Cuánto tiempo demora en estar lista una página web?</button>
-        <div class="faq-answer">
-          <p>El tiempo promedio de desarrollo es de 1 a 3 semanas, dependiendo de la complejidad, la cantidad de secciones y los contenidos que se necesiten integrar.</p>
-        </div>
+    <section class="work section" id="work">
+      <div class="section-heading">
+        <div><div class="section-label">02 / SELECTED WORK</div><h2>Built for different<br><em>kinds of ambition.</em></h2></div>
+        <p>Every project gets its own visual language, interaction model and technical direction.</p>
       </div>
 
-      <div class="faq-item">
-        <button class="faq-question">¿La página web se adapta a celulares y tablets?</button>
-        <div class="faq-answer">
-          <p>Absolutamente. Todos nuestros desarrollos son "Mobile-First" y 100% responsivos, garantizando una visualización perfecta en cualquier dispositivo.</p>
-        </div>
+      <div class="projects" id="projects"></div>
+    </section>
+
+    <section class="capabilities section" id="capabilities">
+      <div class="section-label">03 / CAPABILITIES</div>
+      <div class="cap-grid">
+        <article class="cap">
+          <span>01</span><h3>Digital<br>Experience</h3>
+          <p>Distinctive interfaces, responsive systems and interaction designed around how people actually use the product.</p>
+          <div class="cap-tags">UI/UX · DESIGN SYSTEMS · MOTION</div>
+        </article>
+        <article class="cap">
+          <span>02</span><h3>Web<br>Engineering</h3>
+          <p>Modern front-end architecture built for speed, maintainability, accessibility and a clean editing experience.</p>
+          <div class="cap-tags">NEXT.JS · REACT · TYPESCRIPT</div>
+        </article>
+        <article class="cap">
+          <span>03</span><h3>SEO &<br>Performance</h3>
+          <p>Technical foundations that help search engines understand the site and users reach the important pages faster.</p>
+          <div class="cap-tags">CORE WEB VITALS · SCHEMA · TECH SEO</div>
+        </article>
+        <article class="cap">
+          <span>04</span><h3>Digital<br>Systems</h3>
+          <p>Forms, APIs, CMS, commerce and automations connected into one coherent workflow instead of a pile of tools.</p>
+          <div class="cap-tags">API · CMS · CRM · AUTOMATION</div>
+        </article>
       </div>
+    </section>
 
-      <div class="faq-item">
-        <button class="faq-question">¿Qué incluye el servicio de mantenimiento web?</button>
-        <div class="faq-answer">
-          <p>Incluye actualizaciones del sistema, monitoreo de seguridad contra ataques, copias de respaldo semanales, optimización de velocidad de carga y resolución inmediata de errores técnicos.</p>
-        </div>
+    <section class="stack section">
+      <div class="stack-copy"><div class="section-label">04 / TECHNOLOGY</div><h2>The right tool.<br><em>Not the most tools.</em></h2><p>We choose technology according to the problem — keeping the experience lean, flexible and easy to evolve.</p></div>
+      <div class="stack-list">
+        <div><b>01</b><span>Next.js / React</span><small>APPLICATION LAYER</small></div>
+        <div><b>02</b><span>TypeScript</span><small>ENGINEERING</small></div>
+        <div><b>03</b><span>Vercel / Edge</span><small>DEPLOYMENT</small></div>
+        <div><b>04</b><span>Headless CMS</span><small>CONTENT</small></div>
+        <div><b>05</b><span>Shopify / APIs</span><small>COMMERCE</small></div>
       </div>
+    </section>
 
-      <div class="faq-item">
-        <button class="faq-question">¿Puedo contratar solo el mantenimiento sin el diseño?</button>
-        <div class="faq-answer">
-          <p>Sí, ofrecemos el servicio de mantenimiento para sitios web desarrollados en tecnologías estándar, incluso si fueron creados por otras agencias.</p>
-        </div>
+    <section class="process section" id="process">
+      <div class="section-heading"><div><div class="section-label">05 / PROCESS</div><h2>Small team.<br><em>Serious process.</em></h2></div><p>No endless meetings or handoffs between five different teams. One clear path from first idea to launch.</p></div>
+      <div class="process-line">
+        <div><b>01</b><h3>Discover</h3><p>Goals, audience, positioning and technical constraints.</p></div>
+        <div><b>02</b><h3>Design</h3><p>Structure, art direction, UX and a visual system.</p></div>
+        <div><b>03</b><h3>Build</h3><p>Clean implementation, integrations and responsive behavior.</p></div>
+        <div><b>04</b><h3>Launch</h3><p>QA, performance checks, SEO foundations and deployment.</p></div>
       </div>
+    </section>
 
-      <div class="faq-item">
-        <button class="faq-question">¿Cómo puedo pagar los servicios?</button>
-        <div class="faq-answer">
-          <p>Aceptamos Mercado Pago, transferencias bancarias, tarjetas de crédito y débito. Para clientes internacionales, trabajamos con PayPal y criptomonedas (USDT).</p>
-        </div>
+    <section class="contact section" id="contact">
+      <div class="contact-inner">
+        <div><div class="section-label">06 / START SOMETHING</div><h2>Have a good idea?<br><em>Let's make it real.</em></h2><p>Tell us what you're building, what isn't working or where you want to go next.</p></div>
+        <form id="contactForm">
+          <label>Name / company<input required type="text" placeholder="Your name or company"></label>
+          <label>Email<input required type="email" placeholder="you@company.com"></label>
+          <label>What are you building?<textarea required placeholder="A website, digital product, e-commerce experience..."></textarea></label>
+          <button class="button button-primary" type="submit">Send inquiry <span>↗</span></button>
+          <small id="formMessage"></small>
+        </form>
       </div>
+    </section>
+  </main>
 
-    </div>
-  </section>
-
-  <!-- FOOTER -->
-  <footer class="footer">
-    <div class="footer-top">
-      <div class="footer-text">
-        <h2>Diseña el futuro de tu marca con Looma.</h2>
-        <p>Experiencias digitales de alta gama. Designed with ♡ by Franco Grosso.</p>
-      </div>
-
-      <div class="footer-columns">
-        <div class="footer-col">
-          <h3>Newsletter</h3>
-          <form id="subscribeForm">
-            <input type="email" name="subscriber_email" placeholder="Tu Email para novedades" required />
-            <button class="btn btn-outline" style="width: 100%; border-radius: 8px;" type="submit">SUSCRIBIRME</button>
-            <p id="subscribeStatus"></p>
-          </form>
-        </div>
-
-        <div class="footer-col">
-          <h3>Servicios</h3>
-          <ul>
-            <li><a href="#servicios">Diseño Web Avanzado</a></li>
-            <li><a href="#servicios">Soporte y Mantenimiento</a></li>
-            <li><a href="#servicios">Marketing en Redes</a></li>
-          </ul>
-        </div>
-
-        <div class="footer-col">
-          <h3>Conecta</h3>
-          <ul>
-            <li><a href="https://www.instagram.com/loomawebs/" target="_blank">Instagram</a></li>
-            <li><a href="https://x.com/looma_webs" target="_blank">Twitter / X</a></li>
-            <li><a href="https://www.facebook.com/loomawebs" target="_blank">Facebook</a></li>
-          </ul>
-        </div>
-      </div>
-    </div>
-    
-    <div class="footer-bottom">
-      <p class="rights">© 2026 Looma Agency. Todos los derechos reservados.</p>
-    </div>
+  <footer>
+    <a class="logo" href="#"><span class="logo-mark"><i></i><i></i><i></i></span><span>KORE <b>LABS</b></span></a>
+    <span>© 2026 KORE LABS</span>
+    <span>BUILT WITH INTENT.</span>
   </footer>
 
-  <!-- SCRIPTS -->
-  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-  <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
-  
-  <script>
-    // Inicializar Animaciones de Scroll
-    AOS.init({
-      duration: 800,
-      once: true,
-      offset: 100,
-    });
-
-    // Menú Móvil Hamburger
-    const menuToggle = document.getElementById('menu-toggle');
-    const nav = document.getElementById('nav');
-
-    menuToggle.addEventListener('click', () => {
-      nav.classList.toggle('active');
-      menuToggle.textContent = nav.classList.contains('active') ? '✕' : '☰';
-    });
-
-    // Cerrar menú al hacer click en un enlace (móvil)
-    const navLinks = document.querySelectorAll('#nav a');
-    navLinks.forEach(link => {
-      link.addEventListener('click', () => {
-        if(window.innerWidth <= 768) {
-          nav.classList.remove('active');
-          menuToggle.textContent = '☰';
-        }
-      });
-    });
-
-    // Acordeón FAQ
-    const faqItems = document.querySelectorAll('.faq-item');
-    faqItems.forEach(item => {
-      const question = item.querySelector('.faq-question');
-      question.addEventListener('click', () => {
-        // Cerrar otros
-        faqItems.forEach(otherItem => {
-          if(otherItem !== item && otherItem.classList.contains('active')) {
-            otherItem.classList.remove('active');
-            otherItem.querySelector('.faq-answer').style.maxHeight = null;
-          }
-        });
-        
-        // Alternar actual
-        item.classList.toggle('active');
-        const answer = item.querySelector('.faq-answer');
-        if (item.classList.contains('active')) {
-          answer.style.maxHeight = answer.scrollHeight + "px";
-        } else {
-          answer.style.maxHeight = null;
-        }
-      });
-    });
-
-    // --- INTEGRACIÓN EMAILJS (Manteniendo tu configuración original) ---
-    emailjs.init("dOhV_HvIqJZRyJRPv"); 
-
-    // Formulario de Contacto
-    const form = document.getElementById("contactForm");
-    const status = document.getElementById("status");
-
-    form.addEventListener("submit", function (e) {
-      e.preventDefault();
-      const btn = this.querySelector('button');
-      btn.textContent = 'ENVIANDO...';
-      btn.style.opacity = '0.7';
-
-      emailjs.sendForm("service_ho0ntte", "template_k7j21v6", this).then(
-        () => {
-          status.textContent = "¡Mensaje enviado correctamente! Nos pondremos en contacto pronto.";
-          status.style.color = "var(--accent-color)";
-          btn.textContent = 'ENVIAR MENSAJE';
-          btn.style.opacity = '1';
-          form.reset();
-        },
-        (err) => {
-          status.textContent = "Hubo un error al enviar el mensaje. Inténtalo por WhatsApp.";
-          status.style.color = "#ef4444";
-          btn.textContent = 'ENVIAR MENSAJE';
-          btn.style.opacity = '1';
-          console.error(err);
-        }
-      );
-    });
-
-    // Formulario de Suscripción
-    const subscribeForm = document.getElementById("subscribeForm");
-    const subscribeStatus = document.getElementById("subscribeStatus");
-
-    subscribeForm.addEventListener("submit", function (e) {
-      e.preventDefault();
-      const btn = this.querySelector('button');
-      btn.textContent = '...';
-
-      emailjs.sendForm("service_ho0ntte", "template_k916uu3", this).then(
-        () => {
-          subscribeStatus.textContent = "¡Gracias por suscribirte!";
-          subscribeStatus.style.color = "var(--accent-color)";
-          btn.textContent = 'SUSCRIBIRME';
-          subscribeForm.reset();
-        },
-        (err) => {
-          subscribeStatus.textContent = "Error al suscribirse.";
-          subscribeStatus.style.color = "#ef4444";
-          btn.textContent = 'SUSCRIBIRME';
-          console.error(err);
-        }
-      );
-    });
-  </script>
+  <script src="app.js"></script>
 </body>
 </html>

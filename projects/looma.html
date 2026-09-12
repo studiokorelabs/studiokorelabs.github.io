@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LOOMA // WebGL Immersive Architecture</title>
+    
+    <!-- High-Impact Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Manrope:wght@300;600&display=swap" rel="stylesheet">
+
+    <!-- Core Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+
+    <style>
+        /* ==========================================
+           1. RESET & BASE VARIABLES
+           ========================================== */
+        :root {
+            --bg-color: #030303;
+            --text-main: #f4f4f4;
+            --accent: #ff3366;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            cursor: none; /* Custom cursor handled via JS */
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Manrope', sans-serif;
+            overflow-x: hidden;
+            overscroll-behavior: none;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ==========================================
+           2. WEBGL LAYER (Interactive 3D Background)
+           ========================================== */
+        #webgl-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
+            pointer-events: none; /* DOM receives clicks, canvas only reacts */
+        }
+
+        /* ==========================================
+           3. DOM STRUCTURE (Front-end Layer)
+           ========================================== */
+        main {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+        }
+
+        .section {
+            min-height: 100vh;
+            width: 100vw;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 0 10vw;
+            position: relative;
+        }
+
+        .hero-title {
+            font-family: 'Oswald', sans-serif;
+            font-size: clamp(4rem, 10vw, 12rem);
+            line-height: 0.9;
+            text-transform: uppercase;
+            mix-blend-mode: exclusion;
+        }
+
+        .hero-subtitle {
+            margin-top: 2rem;
+            font-size: 1.5rem;
+            max-width: 500px;
+            font-weight: 300;
+            mix-blend-mode: difference;
+        }
+
+        /* Custom Cursor */
+        #custom-cursor {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 12px;
+            height: 12px;
+            background: #fff;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            mix-blend-mode: difference;
+            transition: width 0.3s, height 0.3s;
+        }
+
+        .scroller-indicator {
+            position: absolute;
+            bottom: 50px;
+            left: 10vw;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .scroller-line {
+            width: 1px;
+            height: 50px;
+            background: rgba(255,255,255,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .scroller-line::after {
+            content: '';
+            position: absolute;
+            top: -50px;
+            left: 0;
+            width: 100%;
+            height: 50px;
+            background: #fff;
+            animation: scrollLine 2s infinite ease-in-out;
+        }
+
+        @keyframes scrollLine {
+            0% { top: -50px; }
+            100% { top: 50px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 3D Rendering Layer -->
+    <div id="webgl-container"></div>
+    <div id="custom-cursor"></div>
+
+    <main id="smooth-wrapper">
+        <div id="smooth-content">
+            
+            <!-- SECTION 1: HERO -->
+            <section class="section" id="section-1">
+                <h1 class="hero-title">DIGITAL<br>FLUIDITY</h1>
+                <p class="hero-subtitle">High-performance web engineering. Experience the convergence of pure code and three-dimensional design.</p>
+                <div class="scroller-indicator">
+                    <span>Scroll</span>
+                    <div class="scroller-line"></div>
+                </div>
+            </section>
+
+            <!-- SECTION 2: GLSL & GPU ACCELERATION -->
+            <section class="section" id="section-2" style="align-items: flex-end; text-align: right;">
+                <h1 class="hero-title" style="color: transparent; -webkit-text-stroke: 2px #fff;">BEYOND<br>LIMITS</h1>
+                <p class="hero-subtitle">Native GLSL shaders running at solid 60 FPS injected straight into the client GPU.</p>
+            </section>
+
+            <!-- SECTION 3: BENTO GRID ARCHITECTURE -->
+            <section class="section" id="bento-section" style="min-height: auto; padding: 15vh 10vw;">
+                <div class="bento-header" style="margin-bottom: 5rem;">
+                    <span style="color: var(--accent); font-family: 'Oswald', sans-serif; letter-spacing: 3px; font-size: 0.9rem; text-transform: uppercase;">Modular Ecosystem</span>
+                    <h2 style="font-family: 'Oswald', sans-serif; font-size: clamp(3rem, 6vw, 6rem); line-height: 1; text-transform: uppercase; margin-top: 1rem;">HIGH-IMPACT<br>ARCHITECTURE</h2>
+                </div>
+
+                <div class="bento-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem;">
+                    <!-- Card 1 -->
+                    <div class="bento-card" style="grid-column: span 2; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.08); border-radius: 24px; padding: 4rem; position: relative; overflow: hidden; backdrop-filter: blur(20px);">
+                        <div class="card-glow" style="position: absolute; top: 0; right: 0; width: 300px; height: 300px; background: radial-gradient(circle, rgba(255,51,102,0.15), transparent 70%); pointer-events: none;"></div>
+                        <span style="font-family: 'Oswald', sans-serif; font-size: 1.2rem; color: var(--accent); margin-bottom: 1rem; display: block;">01 // PERFORMANCE</span>
+                        <h3 style="font-size: 2.2rem; margin-bottom: 1.5rem; font-family: 'Oswald', sans-serif; text-transform: uppercase;">Absolute Sub-Second Speed</h3>
+                        <p style="color: rgba(255,255,255,0.6); line-height: 1.6; font-size: 1.1rem; max-width: 600px;">Every component is optimized via pure WebGL and hardware acceleration, eliminating unnecessary third-party bloatware to guarantee a 100/100 PageSpeed score.</p>
+                    </div>
+
+                    <!-- Card 2 -->
+                    <div class="bento-card" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.08); border-radius: 24px; padding: 4rem; position: relative; backdrop-filter: blur(20px); display: flex; flex-direction: column; justify-content: space-between;">
+                        <div>
+                            <span style="font-family: 'Oswald', sans-serif; font-size: 1.2rem; color: var(--accent); margin-bottom: 1rem; display: block;">02 // SHADERS</span>
+                            <h3 style="font-size: 2.2rem; margin-bottom: 1.5rem; font-family: 'Oswald', sans-serif; text-transform: uppercase;">Native GLSL</h3>
+                        </div>
+                        <div style="font-family: monospace; font-size: 3.5rem; font-weight: 700; color: rgba(255,255,255,0.15);">60 FPS</div>
+                    </div>
+
+                    <!-- Card 3 -->
+                    <div class="bento-card" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.08); border-radius: 24px; padding: 4rem; position: relative; backdrop-filter: blur(20px);">
+                        <span style="font-family: 'Oswald', sans-serif; font-size: 1.2rem; color: var(--accent); margin-bottom: 1rem; display: block;">03 // MOTION</span>
+                        <h3 style="font-size: 2.2rem; margin-bottom: 1.5rem; font-family: 'Oswald', sans-serif; text-transform: uppercase;">GSAP Trigger Engine</h3>
+                        <p style="color: rgba(255,255,255,0.6); line-height: 1.6; font-size: 1.1rem;">Complex timelines synchronized pixel-perfect with user scroll inertia.</p>
+                    </div>
+
+                    <!-- Card 4 -->
+                    <div class="bento-card" style="grid-column: span 2; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.08); border-radius: 24px; padding: 4rem; position: relative; overflow: hidden; backdrop-filter: blur(20px);">
+                        <span style="font-family: 'Oswald', sans-serif; font-size: 1.2rem; color: var(--accent); margin-bottom: 1rem; display: block;">04 // INFRASTRUCTURE</span>
+                        <h3 style="font-size: 2.2rem; margin-bottom: 1.5rem; font-family: 'Oswald', sans-serif; text-transform: uppercase;">Global Edge Computing</h3>
+                        <p style="color: rgba(255,255,255,0.6); line-height: 1.6; font-size: 1.1rem; max-width: 600px;">Distributed deployment across multi-region CDNs to secure response times under 50ms anywhere in the world.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 4: PINNED HORIZONTAL SCROLL SHOWCASE -->
+            <section id="horizontal-section" style="width: 100vw; height: 100vh; overflow: hidden; position: relative; background: #050505;">
+                <div id="horizontal-track" style="display: flex; width: 400vw; height: 100vh; align-items: center; position: relative;">
+                    
+                    <div class="horizontal-panel" style="width: 100vw; height: 100vh; display: flex; align-items: center; justify-content: center; padding: 0 10vw; flex-shrink: 0;">
+                        <div style="max-width: 800px;">
+                            <span style="color: var(--accent); font-family: 'Oswald', sans-serif; letter-spacing: 2px;">01 // SHOWCASE</span>
+                            <h2 style="font-family: 'Oswald', sans-serif; font-size: clamp(3rem, 8vw, 8rem); line-height: 1; text-transform: uppercase; margin-top: 1rem;">Immersive Experiences</h2>
+                            <p style="color: rgba(255,255,255,0.6); font-size: 1.3rem; margin-top: 2rem;">Web design breaking free from flat grids into fully interactive digital environments.</p>
+                        </div>
+                    </div>
+
+                    <div class="horizontal-panel" style="width: 100vw; height: 100vh; display: flex; align-items: center; justify-content: center; padding: 0 10vw; flex-shrink: 0;">
+                        <div style="max-width: 800px;">
+                            <span style="color: var(--accent); font-family: 'Oswald', sans-serif; letter-spacing: 2px;">02 // SHOWCASE</span>
+                            <h2 style="font-family: 'Oswald', sans-serif; font-size: clamp(3rem, 8vw, 8rem); line-height: 1; text-transform: uppercase; margin-top: 1rem;">Extreme Conversion</h2>
+                            <p style="color: rgba(255,255,255,0.6); font-size: 1.3rem; margin-top: 2rem;">User retention multiplied three-fold powered by high-impact visual shock value.</p>
+                        </div>
+                    </div>
+
+                    <div class="horizontal-panel" style="width: 100vw; height: 100vh; display: flex; align-items: center; justify-content: center; padding: 0 10vw; flex-shrink: 0;">
+                        <div style="max-width: 800px;">
+                            <span style="color: var(--accent); font-family: 'Oswald', sans-serif; letter-spacing: 2px;">03 // SHOWCASE</span>
+                            <h2 style="font-family: 'Oswald', sans-serif; font-size: clamp(3rem, 8vw, 8rem); line-height: 1; text-transform: uppercase; margin-top: 1rem;">Next-Gen Tech</h2>
+                            <p style="color: rgba(255,255,255,0.6); font-size: 1.3rem; margin-top: 2rem;">Advanced implementation of WebGL, custom Canvas layers, and browser-based physics engines.</p>
+                        </div>
+                    </div>
+
+                    <div class="horizontal-panel" style="width: 100vw; height: 100vh; display: flex; align-items: center; justify-content: center; padding: 0 10vw; flex-shrink: 0;">
+                        <div style="max-width: 800px;">
+                            <span style="color: var(--accent); font-family: 'Oswald', sans-serif; letter-spacing: 2px;">04 // SHOWCASE</span>
+                            <h2 style="font-family: 'Oswald', sans-serif; font-size: clamp(3rem, 8vw, 8rem); line-height: 1; text-transform: uppercase; margin-top: 1rem;">Built to Scale</h2>
+                            <p style="color: rgba(255,255,255,0.6); font-size: 1.3rem; margin-top: 2rem;">Modular structure engineered to grow seamlessly alongside your brand requirements.</p>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- SECTION 5: CONTACT CALL TO ACTION -->
+            <section class="section" id="contact-section" style="min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; position: relative;">
+                <div class="contact-content" style="z-index: 2; max-width: 900px; padding: 0 2rem;">
+                    <span style="font-family: 'Oswald', sans-serif; color: var(--accent); letter-spacing: 4px; font-size: 1rem; text-transform: uppercase; display: block; margin-bottom: 1.5rem;">Ready to disrupt the digital space?</span>
+                    <h2 style="font-family: 'Oswald', sans-serif; font-size: clamp(3.5rem, 8vw, 9rem); line-height: 0.95; text-transform: uppercase; margin-bottom: 3rem;">LET'S BUILD<br>THE UNSEEN.</h2>
+                    <a href="mailto:contact@looma.agency" class="magnetic-btn" style="display: inline-block; padding: 1.5rem 4rem; background: #fff; color: #000; font-family: 'Oswald', sans-serif; font-size: 1.2rem; text-transform: uppercase; text-decoration: none; border-radius: 50px; font-weight: 700; transition: transform 0.3s ease, background 0.3s ease;">Start a Project</a>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- ==========================================
+         GLSL SHADERS (Native Vertex & Fragment Scripts)
+         ========================================== -->
+    
+    <!-- VERTEX SHADER: Controls geometry dynamics and structural deformation -->
+    <script type="x-shader/x-vertex" id="vertexShader">
+        uniform float uTime;
+        uniform vec2 uMouse;
+        uniform float uScroll;
+        
+        varying vec2 vUv;
+        varying float vElevation;
+
+        // Classical 3D Perlin Noise implementation for mesh warping
+        vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
+        vec4 mod289(vec4 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
+        vec4 permute(vec4 x) { return mod289(((x*34.0)+1.0)*x); }
+        vec4 taylorInvSqrt(vec4 r) { return 1.79284291400159 - 0.85373472095314 * r; }
+
+        float snoise(vec3 v) {
+            const vec2  C = vec2(1.0/6.0, 1.0/3.0) ;
+            const vec4  D = vec4(0.0, 0.5, 1.0, 2.0);
+
+            vec3 i  = floor(v + dot(v, C.yyy) );
+            vec3 x0 = v - i + dot(i, C.xxx) ;
+
+            vec3 g = step(x0.yzx, x0.xyz);
+            vec3 l = 1.0 - g;
+            vec3 i1 = min( g.xyz, l.zxy );
+            vec3 i2 = max( g.xyz, l.zxy );
+
+            vec3 x1 = x0 - i1 + C.xxx;
+            vec3 x2 = x0 - i2 + C.yyy;
+            vec3 x3 = x0 - D.yyy;
+
+            i = mod289(i);
+            vec4 p = permute( permute( permute(
+                        i.z + vec4(0.0, i1.z, i2.z, 1.0 ))
+                      + i.y + vec4(0.0, i1.y, i2.y, 1.0 ))
+                      + i.x + vec4(0.0, i1.x, i2.x, 1.0 ));
+
+            float n_ = 0.142857142857;
+            vec3  ns = n_ * D.wyz - D.xzx;
+
+            vec4 j = p - 49.0 * floor(p * ns.z * ns.z);
+
+            vec4 x_ = floor(j * ns.z);
+            vec4 y_ = floor(j - 7.0 * x_ );
+
+            vec4 x = x_ *ns.x + ns.yyyy;
+            vec4 y = y_ *ns.x + ns.yyyy;
+            vec4 h = 1.0 - abs(x) - abs(y);
+
+            vec4 b0 = vec4( x.xy, y.xy );
+            vec4 b1 = vec4( x.zw, y.zw );
+
+            vec4 s0 = floor(b0)*2.0 + 1.0;
+            vec4 s1 = floor(b1)*2.0 + 1.0;
+            vec4 sh = -step(h, vec4(0.0));
+
+            vec4 a0 = b0.xzyw + s0.xzyw*sh.xxyy ;
+            vec4 a1 = b1.xzyw + s1.xzyw*sh.zzww ;
+
+            vec3 p0 = vec3(a0.xy,h.x);
+            vec3 p1 = vec3(a0.zw,h.y);
+            vec3 p2 = vec3(a1.xy,h.z);
+            vec3 p3 = vec3(a1.zw,h.w);
+
+            vec4 norm = taylorInvSqrt(vec4(dot(p0,p0), dot(p1,p1), dot(p2, p2), dot(p3,p3)));
+            p0 *= norm.x;
+            p1 *= norm.y;
+            p2 *= norm.z;
+            p3 *= norm.w;
+
+            vec4 m = max(0.6 - vec4(dot(x0,x0), dot(x1,x1), dot(x2,x2), dot(x3,x3)), 0.0);
+            m = m * m;
+            return 42.0 * dot( m*m, vec4( dot(p0,x0), dot(p1,x1), dot(p2,x2), dot(p3,x3) ) );
+        }
+
+        void main() {
+            vUv = uv;
+            vec3 pos = position;
+
+            // Distortion driven by noise, time, and scroll input
+            float noiseFreq = 1.5;
+            float noiseAmp = 0.4;
+            vec3 noisePos = vec3(pos.x * noiseFreq + uTime * 0.2, pos.y * noiseFreq + uTime * 0.2, pos.z);
+            
+            // Mouse reaction (ripple wave patterns)
+            float dist = distance(uv, uMouse);
+            float mouseRipple = sin(dist * 20.0 - uTime * 5.0) * 0.1 * exp(-dist * 5.0);
+
+            // Final elevation combining scroll metrics, noise, and mouse interaction
+            float elevation = snoise(noisePos) * noiseAmp + (uScroll * 0.001) + mouseRipple;
+            pos.z += elevation;
+            
+            vElevation = elevation;
+
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
+        }
+    </script>
+
+    <!-- FRAGMENT SHADER: Controls color mapping, iridescent gradients, and lighting -->
+    <script type="x-shader/x-fragment" id="fragmentShader">
+        uniform float uTime;
+        varying vec2 vUv;
+        varying float vElevation;
+
+        // Iridescent color palette generation (Apple/Stripe aesthetic)
+        vec3 palette( in float t, in vec3 a, in vec3 b, in vec3 c, in vec3 d ) {
+            return a + b*cos( 6.28318*(c*t+d) );
+        }
+
+        void main() {
+            // Generate dynamic colors based on vertex elevation values
+            vec3 colorA = vec3(0.5, 0.5, 0.5);
+            vec3 colorB = vec3(0.5, 0.5, 0.5);
+            vec3 colorC = vec3(1.0, 1.0, 1.0);
+            vec3 colorD = vec3(0.263, 0.416, 0.557);
+
+            float mixValue = vElevation * 2.0 + (uTime * 0.1);
+            vec3 finalColor = palette(mixValue, colorA, colorB, colorC, colorD);
+
+            // Apply dark edge vignetting
+            float vignette = distance(vUv, vec2(0.5));
+            finalColor *= smoothstep(0.8, 0.2, vignette);
+
+            gl_FragColor = vec4(finalColor, 1.0);
+        }
+    </script>
+
+    <!-- ==========================================
+         JAVASCRIPT CORE: Three.js + GSAP + Lenis + Particle Engine
+         ========================================== -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            
+            // 1. INIT LENIS (Smooth Scroll Engine)
+            const lenis = new Lenis({
+                duration: 1.2,
+                easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+                smoothWheel: true
+            });
+            
+            function raf(time) {
+                lenis.raf(time);
+                requestAnimationFrame(raf);
+            }
+            requestAnimationFrame(raf);
+
+            // Sync Lenis with GSAP ScrollTrigger
+            gsap.registerPlugin(ScrollTrigger);
+            lenis.on('scroll', ScrollTrigger.update);
+            gsap.ticker.add((time) => { lenis.raf(time * 1000) });
+            gsap.ticker.lagSmoothing(0);
+
+            // 2. CUSTOM CURSOR
+            const cursor = document.getElementById('custom-cursor');
+            let mouseX = 0, mouseY = 0;
+            let targetX = 0, targetY = 0;
+
+            window.addEventListener('mousemove', (e) => {
+                targetX = e.clientX;
+                targetY = e.clientY;
+            });
+
+            const lerp = (start, end, factor) => start + (end - start) * factor;
+            
+            function updateCursor() {
+                mouseX = lerp(mouseX, targetX, 0.2);
+                mouseY = lerp(mouseY, targetY, 0.2);
+                cursor.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0)`;
+                requestAnimationFrame(updateCursor);
+            }
+            updateCursor();
+
+            // 3. SETUP THREE.JS SCENE
+            const container = document.getElementById('webgl-container');
+            const scene = new THREE.Scene();
+            window.webglScene = scene; // Export scene to global window scope
+            
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.z = 2;
+
+            const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            container.appendChild(renderer.domElement);
+
+            // Custom Shader Material Setup
+            const uniforms = {
+                uTime: { value: 0.0 },
+                uMouse: { value: new THREE.Vector2(0.5, 0.5) },
+                uScroll: { value: 0.0 }
+            };
+
+            const material = new THREE.ShaderMaterial({
+                vertexShader: document.getElementById('vertexShader').textContent,
+                fragmentShader: document.getElementById('fragmentShader').textContent,
+                uniforms: uniforms,
+                wireframe: false
+            });
+
+            // High-density flat plane geometry for mesh distortion
+            const geometry = new THREE.PlaneGeometry(5, 5, 128, 128);
+            const plane = new THREE.Mesh(geometry, material);
+            scene.add(plane);
+
+            // 4. ADVANCED PARTICLE CLOUD ENGINE
+            const particleCount = 1500;
+            const particleGeometry = new THREE.BufferGeometry();
+            const particlePositions = new Float32Array(particleCount * 3);
+
+            for(let i = 0; i < particleCount * 3; i += 3) {
+                particlePositions[i] = (Math.random() - 0.5) * 20;
+                particlePositions[i+1] = (Math.random() - 0.5) * 20;
+                particlePositions[i+2] = (Math.random() - 0.5) * 20;
+            }
+
+            particleGeometry.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
+
+            const particleMaterial = new THREE.PointsMaterial({
+                size: 0.03,
+                color: 0xff3366,
+                transparent: true,
+                opacity: 0.6,
+                blending: THREE.AdditiveBlending
+            });
+
+            const particleSystem = new THREE.Points(particleGeometry, particleMaterial);
+            scene.add(particleSystem);
+
+            // 5. WEBGL INTERACTIVITY & EVENTS
+            window.addEventListener('mousemove', (e) => {
+                uniforms.uMouse.value.x = e.clientX / window.innerWidth;
+                uniforms.uMouse.value.y = 1.0 - (e.clientY / window.innerHeight);
+            });
+
+            lenis.on('scroll', (e) => {
+                uniforms.uScroll.value = e.animatedScroll;
+                
+                // Rotate primary mesh and particle cloud organically on scroll
+                plane.rotation.y = (e.animatedScroll * 0.0005);
+                plane.rotation.x = (e.animatedScroll * 0.0002);
+                particleSystem.rotation.y = -(e.animatedScroll * 0.0003);
+            });
+
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+
+            // 6. THREE.JS RENDER LOOP
+            const clock = new THREE.Clock();
+            
+            function animateWebGL() {
+                const elapsedTime = clock.getElapsedTime();
+                uniforms.uTime.value = elapsedTime;
+
+                // Subtle organic motion on the particle system
+                particleSystem.rotation.z = elapsedTime * 0.05;
+
+                renderer.render(scene, camera);
+                requestAnimationFrame(animateWebGL);
+            }
+            animateWebGL();
+
+            // 7. GSAP ORCHESTRATION & ANIMATIONS
+            // Hero Entrances
+            gsap.from(".hero-title", {
+                y: 100,
+                opacity: 0,
+                duration: 1.5,
+                ease: "power4.out",
+                stagger: 0.2
+            });
+
+            gsap.from(".hero-subtitle", {
+                y: 50,
+                opacity: 0,
+                duration: 1.5,
+                delay: 0.5,
+                ease: "power4.out"
+            });
+
+            // Bento Grid Stagger Animations
+            gsap.utils.toArray('.bento-card').forEach((card, index) => {
+                gsap.from(card, {
+                    scrollTrigger: {
+                        trigger: card,
+                        start: "top 85%",
+                        toggleActions: "play none none reverse"
+                    },
+                    y: 80,
+                    opacity: 0,
+                    duration: 1.2,
+                    ease: "power3.out",
+                    delay: index * 0.1
+                });
+            });
+
+            // Pinned Horizontal Scroll Engine
+            const horizontalTrack = document.getElementById('horizontal-track');
+            
+            gsap.to(horizontalTrack, {
+                x: () => -(horizontalTrack.scrollWidth - window.innerWidth),
+                ease: "none",
+                scrollTrigger: {
+                    trigger: "#horizontal-section",
+                    pin: true,
+                    scrub: 1.2,
+                    end: () => "+=" + horizontalTrack.scrollWidth,
+                    invalidateOnRefresh: true
+                }
+            });
+
+            // Interactive Bento Card Border Hovers
+            document.querySelectorAll('.bento-card').forEach(card => {
+                card.addEventListener('mouseenter', () => {
+                    gsap.to(card, { borderColor: 'rgba(255,51,102,0.4)', duration: 0.3 });
+                });
+                card.addEventListener('mouseleave', () => {
+                    gsap.to(card, { borderColor: 'rgba(255,255,255,0.08)', duration: 0.3 });
+                });
+            });
+        });
+    </script>
+</body>
+</html>
