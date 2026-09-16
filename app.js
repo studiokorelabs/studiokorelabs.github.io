@@ -32,7 +32,7 @@ const projects = [
   {
     name: "SHELTER & FORM",
     type: "Architecture / Modular",
-    href: "projects/shelter-form.html",
+    href: "projects/shelter&form.html",
     image: "images/shelter&form.png",
   },
 ];
